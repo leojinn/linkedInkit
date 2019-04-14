@@ -16,13 +16,13 @@ public extension LinkedInAuthorizationViewControllerDelegate {
     }
     
     func linkedInViewControllerTitleAttributtedString() -> NSAttributedString? {
-        let attributes = [NSForegroundColorAttributeName: UIColor.black]
-        return NSAttributedString(string: "Sign In", attributes: attributes)
+        let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+        return NSAttributedString(string: "Sign In", attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
     }
     
     func linkedInViewControllerCancelAttributtedString() -> NSAttributedString? {
-        let attributes = [NSForegroundColorAttributeName: UIColor.black]
-        return NSAttributedString(string: "Cancel", attributes: attributes)
+        let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+        return NSAttributedString(string: "Cancel", attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
     }
     
     func linkedInViewControllerLoadingView() -> LinkedInLoadingView? {
@@ -103,8 +103,8 @@ class LinkedInAuthorizationViewController: UIViewController {
         if let titleAttrString = delegate?.linkedInViewControllerTitleAttributtedString() {
             label.attributedText = titleAttrString
         } else {
-            let attributes = [NSForegroundColorAttributeName: UIColor.black]
-            label.attributedText = NSAttributedString(string: "Sign In", attributes: attributes)
+            let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+            label.attributedText = NSAttributedString(string: "Sign In", attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
         }
         label.sizeToFit()
         navigationItem.titleView = label
@@ -114,8 +114,8 @@ class LinkedInAuthorizationViewController: UIViewController {
             customButton.setAttributedTitle(cancelAttrString,
                                             for: .normal)
         } else {
-            let attributes = [NSForegroundColorAttributeName: UIColor.black]
-            let attributedTitle = NSAttributedString(string: "Cancel", attributes: attributes)
+            let attributes = [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black]
+            let attributedTitle = NSAttributedString(string: "Cancel", attributes: convertToOptionalNSAttributedStringKeyDictionary(attributes))
             customButton.setAttributedTitle(attributedTitle,
                                             for: .normal)
         }
@@ -136,7 +136,7 @@ class LinkedInAuthorizationViewController: UIViewController {
         view.addSubview(webView)
     }
     
-    func cancelTapped() {
+    @objc func cancelTapped() {
         cancelCallback?()
     }
     
@@ -180,7 +180,7 @@ class LinkedInAuthorizationViewController: UIViewController {
 extension LinkedInAuthorizationViewController: UIWebViewDelegate {
     func webView(_ webView: UIWebView,
                  shouldStartLoadWith request: URLRequest,
-                                            navigationType: UIWebViewNavigationType) -> Bool {
+                                            navigationType: UIWebView.NavigationType) -> Bool {
         let url = request.url!.absoluteString
         isHandlingRedirectURL = url.hasPrefix(configuration.redirectURL)
         
@@ -249,4 +249,15 @@ extension LinkedInAuthorizationViewController: UIWebViewDelegate {
         
         return nil
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

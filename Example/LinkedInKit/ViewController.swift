@@ -16,7 +16,7 @@ let linkedInProfileUrl = "\(baseUrl):(\(profileInfo),\(pictureParams),\(location
 class ViewController: UIViewController {
     
     let profileView = ProfileView()
-    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+    let activityIndicator = UIActivityIndicatorView(style: .gray)
     var button: UIButton!
     
     override func viewDidLoad() {
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self,
                                                          selector: #selector(applicationDidBecomeActive),
-                                                         name: NSNotification.Name.UIApplicationDidBecomeActive,
+                                                         name: UIApplication.didBecomeActiveNotification,
                                                          object: nil)
     }
     
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func applicationDidBecomeActive() {
+    @objc func applicationDidBecomeActive() {
         if !LinkedInKit.isAuthorized { signOut() }
     }
     
@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         view.addSubview(activityIndicator)
     }
     
-    func onButton() {
+    @objc func onButton() {
         if !LinkedInKit.isAuthorized {
             activityIndicator.startAnimating()
             LinkedInKit.authenticate({ [weak self] (token) in
